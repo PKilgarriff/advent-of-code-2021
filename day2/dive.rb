@@ -8,7 +8,7 @@ input = File.foreach("input.txt").map { |line| [line.split[0], line.split[1].to_
 #print input
 
 # join all the forwards, ups and downs (is there a backward?)
-# subtract the total ups form the downs
+# subtract the total ups from the downs
 # multiply the depth and the horizontal position
 
 def basic_calculate_position(input)

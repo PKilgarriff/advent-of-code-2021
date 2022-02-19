@@ -13,8 +13,7 @@ def count_depth_increase(input)
 end
 
 # map the input into a new array of 3-measurement windows
-# pass that arry to count_depth_increase
-
+# pass that array to count_depth_increase
 
 def sliding_measurement_windows(input)
 	windows = input.map.with_index { |number, idx| [number.to_i, input[idx + 1].to_i, input[idx + 2] ].sum }
