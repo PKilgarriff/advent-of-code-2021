@@ -29,26 +29,51 @@ class VentMapper
 				line_type = "horizontal"
 			else
 				line_type = "diagonal"
-				next
 			end
 
-			if line_type == "vertical"
+			case line_type
+			when "vertical"
 				temp_array = []
 				start_point = [vent_start_y, vent_end_y].min
 				end_point = [vent_start_y, vent_end_y].max
+				# This could be redone using the below method from diagonals
 				for i in start_point..end_point
 					temp_array.push([vent_end_x, i])
 				end
 				@vent_line_coordinates.push(temp_array)
-			end
-			if line_type == "horizontal"
+			when "horizontal"
 				temp_array = []
 				start_point = [vent_start_x, vent_end_x].min
 				end_point = [vent_start_x, vent_end_x].max
+				# This could be redone using the below method from diagonals
 				for i in start_point..end_point
 					temp_array.push([i, vent_end_y])
 				end
 				@vent_line_coordinates.push(temp_array)
+			when "diagonal"
+				# next
+				if vent_start_x < vent_end_x
+					temp_x_array = (vent_start_x..vent_end_x).to_a
+				else
+					temp_x_array = (vent_start_x.downto(vent_end_x)).to_a
+				end
+				if vent_start_y < vent_end_y
+					temp_y_array = (vent_start_y..vent_end_y).to_a
+				else
+					temp_y_array = (vent_start_y.downto(vent_end_y)).to_a
+				end
+				# If the two arrays are not the same size I think this means that it's not a 45° diagonal
+				temp_array = temp_x_array.zip(temp_y_array)
+				@vent_line_coordinates.push(temp_array)
+				# Possible types of diagonal lines - only 45 degree considered?
+				# If a co-ordinate's first value is lower than the second, then
+					# (x1..x2).to_a will give an array of the co-ordinates
+				# If a co-ordinate's first value is higher than the second, then
+					# (x1.downto(x2)).to_a will give an array of the co-ordinates
+				# x1 is lower than x2 && y1 is lower than y2 (~negative correlation)
+				# x1 is higher than x2 && y1 is lower than y2 (~positive correlation)
+				# x1 is lower than x2 && y1 is higher than y2 (~negative correlation)
+				# x1 is higher than x2 && y1 is lower than y2 (~positive correlation)
 			end
 			# check to see if either of the vent co-ordinates are greater than our current measurements (Needed to calculate final grid size)
 			max_x = [max_x, [vent_start_x, vent_end_x].max].max
@@ -62,7 +87,7 @@ class VentMapper
 	# I think I need to make an array of arrays representing co-ordinates for each point on a line
 	# I can then go through that array, adding 1 to the value within the vent_map at each position
 	# this way I don't have to worry about whether the start or end is higher/lower, left/right
-	# plus no need to iterate trhough the entire empty map 'several' times
+	# plus no need to iterate through the entire empty map 'several' times
 
 	def grid_updater
 		@vent_line_coordinates.each do |vent_line|
@@ -80,7 +105,7 @@ class VentMapper
 		@vent_map[5][5] = "Hello"
 	end
 
-	# function that checks "cards" to see if they have a winning row or column
+	# function that checks each row to see if there are danger zones
 	def count_danger_zones
 		danger_zones = 0
 		@vent_map.each do |line|
@@ -108,6 +133,17 @@ input = File.read("input.txt").split("\n")
 #	"5,5 -> 8,2"
 #]
 
+# full_output
+# 1.1....11.
+# .111...2..
+# ..2.1.111.
+# ...1.2.2..
+# .112313211
+# ...1.2....
+# ..1...1...
+# .1.....1..
+# 1.......1.
+# 222111....
 
 vent_navigator = VentMapper.new(input)
 
