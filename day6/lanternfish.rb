@@ -1,12 +1,13 @@
 class Lanternfish
+  attr_reader :timer
+
   def initialize(timer = 8)
     @timer = timer
   end
 
-  def day_passed
+  def day_passed(school)
     if @timer == 0
-      # I want to push a new instance to the instance variable on main
-      @newborns << Lanternfish.new
+      school.spawn_newborn
       @timer = 6
     else
       @timer -= 1
@@ -14,8 +15,57 @@ class Lanternfish
   end
 end
 
-@school = []
-@newborns = []
+class School
+  def initialize(input)
+    @school = input.split(',').map { |timer| Lanternfish.new(timer.to_i) }
+    reset_newborns
+  end
+
+  def school_size
+    @school.size
+  end
+
+  def reset_newborns
+    @newborns = []
+  end
+
+  def spawn_newborn
+    @newborns << Lanternfish.new
+  end
+
+  def add_newborns_to_school
+    @school.push(*@newborns)
+    reset_newborns
+  end
+
+  def day_passed
+    @school.each { |fish| fish.day_passed(self) }
+    # puts "#{@newborns.size} newborn lanternfish spawned"
+    add_newborns_to_school
+  end
+
+  def advance_days(number)
+    number.times { day_passed }
+  end
+
+  def print_timers
+    timers = @school.map { |fish| fish.timer }
+    p timers
+  end
+end
+
+# input = "3,4,3,1,2"
+
+# Changes the current working directory to the same as the ruby file that is running, allowing simple reference to text file
+Dir.chdir(File.dirname(__FILE__))
+# Reads the input.txt file
+input = File.read("input.txt")
+
+school = School.new(input)
+
+school.advance_days(80)
+# school.print_timers
+puts school.school_size
 
 # Create a lanternfish class
 # Allow instances of the lanternfish class to manage their own timers
