@@ -1,6 +1,6 @@
 class Lanternfish
-  def initialize
-    @timer = 8
+  def initialize(timer = 8)
+    @timer = timer
   end
 
   def day_passed
