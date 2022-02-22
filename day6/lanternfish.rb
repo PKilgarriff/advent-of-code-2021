@@ -28,7 +28,8 @@ class School
   end
   
   def school_size
-    @school.size
+    # @school.size
+    @school.values.sum
   end
 
   def print_timers
@@ -40,26 +41,32 @@ class School
     @newborns << Lanternfish.new
   end
 
-  private
+  # private
 
   def reset_newborns
-    @newborns = []
+    # @newborns = []
+    @newborns = 0
   end
 
   def add_newborns_to_school
-    @school.push(*@newborns)
+    # @school.push(*@newborns)
+    @school[8] = @newborns
     reset_newborns
   end
 
   def day_passed
-    @school.map! do |fish|
-      if fish == 0
-        @newborns << 8
-        fish = 6
-      else
-        fish -= 1
-      end
+    p @school
+    @school.each do |key, value|
+      puts "#{key} #{value}"
     end
+    @school.transform_keys! { |key| key - 1 }
+    p @school
+    unless @school[-1].nil?
+      @newborns += @school[-1]
+      p "Newborns: #{@newborns}"
+      @school.delete(-1)
+    end
+    @school[6] = @school[6].nil? ? @newborns : @school[6] += @newborns
     # puts "#{@newborns.size} newborn lanternfish spawned"
     add_newborns_to_school
   end
@@ -72,7 +79,7 @@ Dir.chdir(File.dirname(__FILE__))
 # Reads the input.txt file
 input = File.read("input.txt")
 
-input = "3,4,3,1,2"
+# input = "3,4,3,1,2"
 # Exercise 1
 school1 = School.new(input)
 school1.advance_days(80)
