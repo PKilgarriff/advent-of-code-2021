@@ -17,7 +17,9 @@ end
 
 class School
   def initialize(input)
-    @school = input.split(',').map { |timer| Lanternfish.new(timer.to_i) }
+    # @school = input.split(',').map { |timer| Lanternfish.new(timer.to_i) }
+    @school = input.split(',').map(&:to_i)
+    @school = @school.group_by(&:itself).transform_values(&:count)
     reset_newborns
   end
   
@@ -50,24 +52,31 @@ class School
   end
 
   def day_passed
-    @school.each { |fish| fish.day_passed(self) }
+    @school.map! do |fish|
+      if fish == 0
+        @newborns << 8
+        fish = 6
+      else
+        fish -= 1
+      end
+    end
     # puts "#{@newborns.size} newborn lanternfish spawned"
     add_newborns_to_school
   end
 
 end
 
-# input = "3,4,3,1,2"
 
 # Changes the current working directory to the same as the ruby file that is running, allowing simple reference to text file
 Dir.chdir(File.dirname(__FILE__))
 # Reads the input.txt file
 input = File.read("input.txt")
 
-# # Exercise 1
-# school1 = School.new(input)
-# school1.advance_days(80)
-# puts school1.school_size
+input = "3,4,3,1,2"
+# Exercise 1
+school1 = School.new(input)
+school1.advance_days(80)
+puts school1.school_size
 
 # Create a lanternfish class
 # Allow instances of the lanternfish class to manage their own timers
@@ -106,3 +115,12 @@ puts school2.school_size
     # add an 8 (so a newborn) to @newborns
   # if it's greater than 0, subtract 1
 # This removes the need for the fish class
+
+# Above attempted - still issues with SystemStackError
+# Instead of array of timers
+# Switch to hash where keys are timers and values are number of fishes currently with that timer
+# each day that passes, reduce all KEYS by 1
+  # Ways of doing this -> actually change key?
+  # transform hash to itself but with new keys (that are 1 less)?
+# the value of the 0 hash then gets added both to the key 6 and the key 8
+# return the sum of all values
