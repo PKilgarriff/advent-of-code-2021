@@ -33,15 +33,15 @@ class School
     timers = @school.map { |fish| fish.timer }
     p timers
   end
+  
+  def spawn_newborn
+    @newborns << Lanternfish.new
+  end
 
   private
 
   def reset_newborns
     @newborns = []
-  end
-
-  def spawn_newborn
-    @newborns << Lanternfish.new
   end
 
   def add_newborns_to_school
@@ -70,9 +70,9 @@ school1.advance_days(80)
 puts school1.school_size
 
 # Exercise 2
-school1 = School.new(input)
-school1.advance_days(256)
-puts school1.school_size
+school2 = School.new(input)
+school2.advance_days(256)
+puts school2.school_size
 
 # Create a lanternfish class
 # Allow instances of the lanternfish class to manage their own timers
