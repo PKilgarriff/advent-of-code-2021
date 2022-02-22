@@ -64,15 +64,10 @@ Dir.chdir(File.dirname(__FILE__))
 # Reads the input.txt file
 input = File.read("input.txt")
 
-# Exercise 1
-school1 = School.new(input)
-school1.advance_days(80)
-puts school1.school_size
-
-# Exercise 2
-school2 = School.new(input)
-school2.advance_days(256)
-puts school2.school_size
+# # Exercise 1
+# school1 = School.new(input)
+# school1.advance_days(80)
+# puts school1.school_size
 
 # Create a lanternfish class
 # Allow instances of the lanternfish class to manage their own timers
@@ -87,7 +82,7 @@ puts school2.school_size
 # the fish that spawn new fish should push them to an array of "newborns"
 # Once all the fish that began the day have experienced a day passing, add the newborns to the main array
 # repeat the above until 80 days have passed
-# count the size of the array (Potentially mahussive)
+# count the size of the array (Potentially mahussive) [Update: It was]
 
 #### OR #####
 # Make the school of fish a class
@@ -96,3 +91,18 @@ puts school2.school_size
 # It can hold the newborns
 # It can return the size of the school
 # It can increment by days?
+
+# Exercise 2
+school2 = School.new(input)
+school2.advance_days(256)
+puts school2.school_size
+
+# Issues with current approach for Exercise 2
+# SystemStackError as stack level gets too deep => too many nested function calls
+# Instead of each lanternfish being its own instance, maybe @school remains an array of timers
+  # School would need a method to iterate over the array
+  # check if a value is 0
+    # if so make it 6
+    # add an 8 (so a newborn) to @newborns
+  # if it's greater than 0, subtract 1
+# This removes the need for the fish class
